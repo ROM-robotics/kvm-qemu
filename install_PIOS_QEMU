@@ -1,0 +1,42 @@
+#!/bin/bash
+
+#########   #########
+sudo apt update && sudo apt upgrade
+sudo apt install qemu-system
+clear
+
+#++++++++++ loop ++++++++++#
+echo "Please Download raspberry pi image and hit enter"
+while [ true ] ; do
+read -t 3 -n 1
+if [ $? = 0 ] ; then
+exit ;
+else
+echo "   [OSRFM] OPEN SOURCE ROBOTICS FOR MYANMAR"
+fi
+done
+exit
+#++++++++++ loop ++++++++++#
+
+mkdir ~/arm64 && cd ~/arm64
+wget https://downloads.raspberrypi.org/raspios_arm64/images/raspios_arm64-2022-04-07/2022-04-04-raspios-bullseye-arm64.img.xz
+xz --decompress 2022-04-04-raspios-bullseye-arm64.img.xz
+sudo fdisk -l 2022-04-04-raspios-bullseye-arm64.img
+
+############  mount and extract ############
+echo "Please check size of 2nd image and multiply by 512"
+sudo mkdir -p /mnt/rpi64
+sudo mount -o offset=272629760 2022-04-04-raspios-bullseye-arm64.img /mnt/rpi64
+cd ~/arm64
+cp /mnt/rpi64/vmlinux .
+cp /mnt/rpi64/initrd.img .
+sudo vim /mnt/rpi64/etc/fstab
+# replace mmcblk0p1 to /dev/vda1 and mmcblk0p2 to /dev/vda2
+
+############ create script and launch ###############
+touch launch1.sh
+command_1="qemu-system-aarch64 -M virt -m 1024 -smp 4 -cpu cortex-a53 -kernel vmlinux -initrd initrd.img -drive file=2018-01-08-raspberry-pi-3-buster-PREVIEW.img,if=none,id=drive0,cache=writeback -device virtio-blk,drive=drive0,bootindex=0 -append 'root=/dev/vda2 noresume rw' -no-reboot -nographic"
+echo "$command_1" > launch1.sh
+sudo chmod +x launch1.sh
+
+

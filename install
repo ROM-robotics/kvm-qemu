@@ -14,7 +14,7 @@ example_command=sudo virt-install --name romrobot --os-variant generic --ram 204
 echo "$example_command"
 
 ######### check daemon #########
-sudo systemctl status libvirtd
+#sudo systemctl status libvirtd
 sudo systemctl restart libvirtd
 
 ######### add user to groups #########
@@ -37,6 +37,6 @@ echo 'uri_default = "qemu:///system"' >> ~/.config/libvirt/libvirt.conf
 # qemu://mr_robot@192.168.1.2/system
 
 ######### where is images?
-ls /var/lib/libvirt/images
-ls /var/lib/libvirt/isos
+sudo ls /var/lib/libvirt/images
+#ls /var/lib/libvirt/isos
 
