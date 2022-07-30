@@ -1,0 +1,5 @@
+#!/bin/bash
+
+######### download pi 4 lite image #########
+mkdir ~/pi4 && cd ~/pi4
+git clone https://github.com/dhruvvyas90/qemu-rpi-kernel

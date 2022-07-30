@@ -1,0 +1,42 @@
+#!/bin/bash
+sudo apt update
+sudo apt upgrade
+
+######### install #########
+sudo apt -y install bridge-utils cpu-checker libvirt-clients libvirt-daemon qemu qemu-kvm virtinst libvirt-daemon-system bridge-utils virt-manager qemu-system qemu-system-arm
+
+######### check #########
+kvm-ok
+
+######### example #########
+example_command=sudo virt-install --name romrobot --os-variant generic --ram 2048 --disk path=/var/lib/libvirt/images/o2.qcow2,size=8 -graphics none --vcpus 2 --os-type linux --console pty,target_type=serial --cdrom /var/lib/libvirt/isos/ubuntu-22.04-server-amd64.iso
+
+echo "$example_command"
+
+######### check daemon #########
+sudo systemctl status libvirtd
+sudo systemctl restart libvirtd
+
+######### add user to groups #########
+sudo adduser $USER kvm
+sudo adduser $USER libvirt
+
+######### configuration ########
+mkdir -p ~/.config/libvirt
+sudo cp -rv /etc/libvirt/libvirt.conf ~/.config/libvirt/
+sudo chown $USER:sudo ~/.config/libvirt/libvirt.conf
+echo 'uri_default = "qemu:///system"' >> ~/.config/libvirt/libvirt.conf
+
+
+# virsh list --all
+# virsh list
+# virsh shutdown 1
+# virt-install ..
+# virt-clone ..
+# qemu:///system  				#this is localhost uri
+# qemu://mr_robot@192.168.1.2/system
+
+######### where is images?
+ls /var/lib/libvirt/images
+ls /var/lib/libvirt/isos
+
